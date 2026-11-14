@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — pre-token protocols ranked by implied launch value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p class="kicker">TOKEN RADAR &middot; MODEL RADAR-2</p>
+    <h1>Which pre-token protocol is worth farming next?</h1>
+    <p class="sub">Every protocol below records no token yet. Each is ranked by an
+    <strong>implied launch value</strong> — what its token would be worth if its
+    record stayed as it is. The value is this radar&rsquo;s own claim, never
+    make.fun&rsquo;s, and &ldquo;records no token&rdquo; is what DefiLlama shows,
+    not proof it has none.</p>
+    <p class="meta"><span id="asof"></span> &middot; Source: <span id="src"></span></p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="lede" id="lede"></section>
+  <section class="leaders" id="leaders" aria-label="Top three"></section>
+
+  <section class="controls" aria-label="Board controls">
+    <input id="q" type="search" placeholder="Search a protocol&hellip;" aria-label="Search protocols">
+    <select id="cat" aria-label="Filter by category"><option value="">All categories</option></select>
+    <select id="chain" aria-label="Filter by chain"><option value="">All chains</option></select>
+    <label class="chk"><input id="wl" type="checkbox"> Watchlist only</label>
+    <div class="tabs" role="tablist">
+      <button id="tab-board" role="tab" aria-selected="true">Pre-token board</button>
+      <button id="tab-live" role="tab" aria-selected="false">Live tokens</button>
+    </div>
+    <span class="count" id="count"></span>
+  </section>
+
+  <section id="board-pane">
+    <table id="board">
+      <thead><tr>
+        <th data-k="rank">Rank</th><th data-k="name">Protocol</th>
+        <th data-k="category">Category</th><th data-k="tvl_usd">TVL</th>
+        <th data-k="change_7d">7d</th><th data-k="age_days">Age</th>
+        <th data-k="implied_value_usd">Implied value</th><th data-k="watchlist">Token</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p class="hint">Click a row for the full breakdown and its six-step farm plan.
+    Click a column header to sort. Values are the snapshot&rsquo;s own figures.</p>
+  </section>
+
+  <section id="live-pane" hidden>
+    <h2>Live tokens — already trading, kept off the ranking</h2>
+    <p class="sub2">These protocols record a token, so they cannot rank as
+    pre-token launches. They are the market the multiples come from: the 24
+    largest by market cap.</p>
+    <table id="live">
+      <thead><tr><th>#</th><th>Protocol</th><th>Category</th><th>TVL</th>
+      <th>7d</th><th>Market cap</th><th>mcap / TVL</th></tr></thead>
+      <tbody id="live-rows"></tbody>
+    </table>
+  </section>
+
+  <section class="model" id="model">
+    <h2>How the implied value is worked out</h2>
+    <p class="formula">implied = round( TVL &times; comp(category) &times; growth
+    &times; maturity &times; chains )</p>
+    <ul>
+      <li><strong>comp(category)</strong> — the median market-cap / TVL ratio of the
+      snapshot&rsquo;s live-token protocols in that category, each ratio capped at
+      10, shrunk toward the global median with weight n/(n+10); the global
+      median when a category has fewer than two live comps. Clamped to
+      [0.05, 1.0], rounded to 4 decimals.</li>
+      <li><strong>growth</strong> = 1 + clamp(change_7d, &minus;60, 120) / 100 &times; 0.5
+      — a protocol growing fast is worth more than one shrinking.</li>
+      <li><strong>maturity</strong> = 0.6 + min(age_days, 1095) / 1095 &times; 0.4 —
+      age is the days since DefiLlama first listed it; unlisted counts as 365 days.</li>
+      <li><strong>chains</strong> = 1 + 0.02 &times; min(max(chains &minus; 1, 0), 5) —
+      a small premium for being live on more chains.</li>
+    </ul>
+    <h3>Largest category multiples</h3>
+    <table id="comps">
+      <thead><tr><th>Category</th><th>Multiple</th><th>Live comps</th><th>Median mcap / TVL</th></tr></thead>
+      <tbody id="comp-rows"></tbody>
+    </table>
+    <p class="note">No protocol name is special-cased: the same function scores
+    every row. Wrapped, staked and bridged products of tokens that already trade
+    are left off the board — they are not protocols waiting on a launch of their
+    own. Farm plans state what each step costs and how long it takes; never pay
+    anyone to claim for you, and claim only through a protocol&rsquo;s official site.</p>
+  </section>
+</main>
+
+<dialog id="detail"><div id="detail-body"></div></dialog>
+
+<footer class="wrap foot"><p>Token Radar, model radar-2. Data: DefiLlama snapshot,
+see header. Built to be read, not to predict: no implied value here says a
+token will be issued, or when.</p></footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
